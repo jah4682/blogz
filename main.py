@@ -54,6 +54,15 @@ def newpost():
             return render_template('newpost.html',errorTitle=errorT,errorBody=errorB)
         # if no error message redirect back to blog page
         else:
+            # get from form
+            entry_title = request.form['title_f']
+            entry_body = request.form['body_f']
+            
+            # database insertion
+            blog_entry = Blog(entry_title, entry_body)
+            db.session.add(blog_entry)
+            db.session.commit()
+
             return redirect('/blog')
 
 
@@ -65,8 +74,10 @@ def newpost():
 @app.route('/blog', methods=['GET'])
 def blog():
 
-    
-    return render_template('blog.html',title="Build a Blog")
+    # retrieve from database
+    blog = Blog.query.all()
+    print(blog)
+    return render_template('blog.html',blog=blog)
 
 
 
