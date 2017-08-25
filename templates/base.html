@@ -1,0 +1,27 @@
+<!-- Build a Blog Assignment -->
+<!-- Base HTML page -->
+
+<!DOCTYPE html>
+<html>
+    <head>
+
+        <title>{{title}}</title>
+
+        <style>
+            .error {
+                color:red;
+                font-style: italic;
+            }
+        </style>
+
+    </head>
+
+    <body>
+        <p><a href="/">Main Blog Page</a>&emsp;<a href="/newpost">Add a Blog Entry</a></p>
+
+
+        {% block content %}
+        {% endblock %}
+
+    </body>
+</html>
