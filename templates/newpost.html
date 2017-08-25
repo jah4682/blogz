@@ -10,13 +10,13 @@
     
     <label for="title">Title for your new blog:</label>
     <br>
-    <input id="title" type="text" name="title_f">
+    <input id="title" type="text" name="title_f" value="{{title_p}}">
     <br>
     <span class="error">{{errorTitle}}</span>
     <br><br>
     <label for="bpost">Your new blog:</label>
     <br>
-    <textarea name="body_f" id="bpost" cols="30" rows="10"></textarea>
+    <textarea name="body_f" id="bpost" cols="30" rows="10">{{body_p}}</textarea>
     <br>
     <span class="error">{{errorBody}}</span>
     <br><br>

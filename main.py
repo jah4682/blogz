@@ -36,7 +36,8 @@ def newpost():
     # render this block of code when submit button is pressed
     if request.method == 'POST':
         # retrieve variables
-    
+        title = request.form['title_f']
+        body = request.form['body_f']
 
         # Validatation: write error messages for empty text boxes
         if request.form['title_f'] == '':
@@ -51,7 +52,7 @@ def newpost():
 
         # if there are error messages redisplay newpost page with errors
         if errorB or errorT :
-            return render_template('newpost.html',errorTitle=errorT,errorBody=errorB)
+            return render_template('newpost.html',errorTitle=errorT,errorBody=errorB,title_p=title,body_p=body)
         # if no error message redirect back to blog page
         else:
             # get from form
