@@ -35,8 +35,14 @@ def newpost():
             errorB = ''
 
 
-        return render_template('newpost.html',errorTitle=errorT,errorBody=errorB)
-    
+        # if there are error messages redisplay newpost page with errors
+        if errorB or errorT :
+            return render_template('newpost.html',errorTitle=errorT,errorBody=errorB)
+        # if no error message redirect back to blog page
+        else:
+            return redirect('/blog')
+
+
     # render form when first loading page
     return render_template('newpost.html')
 
