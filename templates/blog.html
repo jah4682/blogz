@@ -7,4 +7,12 @@
 
 <h1 style="text-align: center;">Build a Blog</h1>
 
+{% for blogpost in blog%}
+    <h3>{{blogpost.title}}</h3>
+    <p>{{blogpost.body}}</p>
+    <hr />
+
+
+{% endfor%}
+
 {% endblock %}
