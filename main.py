@@ -6,13 +6,27 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
-app.config['SQLACHEMY_ECHO'] = True
-app.config['SQLACHEMY_DATABASE_URI'] = 'mysql+pymysql:build-a-blog:myblog@@localhost:8889/build-a-blog'
+app.config['SQLALCHEMY_ECHO'] = True
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://build-a-blog:myblog@localhost:8889/build-a-blog'
+
 
 db = SQLAlchemy(app)    # creating the database object
 
 
-# *** Begin Content ***
+# **** Begin Content ****
+
+# Database Class Constructor
+class Blog(db.Model):
+
+    # Table Structure
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(120))
+    body = db.Column(db.String(1000))
+
+    def __init__(self, title, body):
+        self.title = title
+        self.body = body
+
 
 # New Post Function
 @app.route('/newpost', methods=['GET','POST'])
@@ -45,6 +59,7 @@ def newpost():
 
     # render form when first loading page
     return render_template('newpost.html')
+
 
 # Blog page Function
 @app.route('/blog', methods=['GET'])
