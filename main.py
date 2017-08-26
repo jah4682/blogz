@@ -64,7 +64,10 @@ def newpost():
             db.session.add(blog_entry)
             db.session.commit()
 
-            return redirect('/blog')
+
+            # get id of most recent blog entry
+            value_id = blog_entry.id
+            return redirect('/blog?id='+str(value_id))
 
 
     # render form when first loading page
@@ -73,13 +76,26 @@ def newpost():
 
 # Blog page Function
 @app.route('/blog', methods=['GET'])
-def blog():
+def index():
 
-    # retrieve from database
-    blog = Blog.query.all()
-    print(blog)
-    return render_template('blog.html',blog=blog)
 
+    # retrieve from url
+    value_id = request.args.get('id')
+    
+    # test for presense of id in URL
+    if value_id == None:
+        value = False
+    else:
+        value = True
+
+    if not value:
+        # retrieve from database
+        blog = Blog.query.all()
+        return render_template('blog.html',blog=blog,value=value)
+    else:
+        value = True
+        blog_x = Blog.query.filter_by(id=value_id).all()
+        return render_template('blog.html',blog=blog_x,value=value)
 
 
 # *** End Content ***

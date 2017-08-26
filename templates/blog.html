@@ -5,14 +5,21 @@
 
 {% block content %}
 
+
+{% if value %}
+
+<h1 style="text-align: center;">{{blog[0].title}}</h1>
+<p>{{blog[0].body}}</p>
+
+{% else %}
 <h1 style="text-align: center;">Build a Blog</h1>
 
 {% for blogpost in blog%}
-    <h3>{{blogpost.title}}</h3>
+    <h3><a href="/blog?id={{blogpost.id}}">{{blogpost.title}}</a></h3>
     <p>{{blogpost.body}}</p>
     <hr />
-
-
 {% endfor%}
+
+{% endif %}
 
 {% endblock %}
