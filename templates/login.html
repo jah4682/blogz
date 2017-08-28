@@ -1,0 +1,34 @@
+<!-- Blogz Assignment -->
+<!-- form for logging in users -->
+{% extends "base.html" %}
+{% block content %}
+<h1>Log in to Blogz</h1>
+<p>If you don't have an account, you may <a href="/register">register</a> for one</p>
+
+<form action="/login" method="POST">
+    <table>
+        <tr>
+            {% with messages = get_flashed_messages(category_filter=["user"]) %}
+            <td><label for="username">username</label></td>
+            <td>
+                <input id="username" name="username_f" type="text" value="{{request.form.username}}">
+                <span class='error'>{{messages[0]}}</span>
+            </td>
+            {% endwith %}
+        </tr>
+        <tr>
+            {% with messages = get_flashed_messages(category_filter=["pwd"]) %}
+            <td><label for="password">Password</label></td>
+            <td>
+                <input id="password" name="password_f" type="password">
+                <span class='error'>{{messages[0]}}</span>
+            </td>
+            {% endwith %}
+        </tr>
+        {#{% endfor %}#}
+        
+
+    </table>
+    <input type="submit" value="Log In" />
+</form>
+{% endblock %}

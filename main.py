@@ -1,15 +1,14 @@
 # ---- Build a Blog Assignment ----
 
 # *** Setup ***
-from flask import Flask, request, redirect, render_template
+from flask import Flask, request, redirect, render_template, flash, request
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://blogz:myblog@localhost:8889/blogz'
-
-
+app.secret_key = 'ioga;skebr'  # for flash messages
 db = SQLAlchemy(app)    # creating the database object
 
 print('***TEST-1***')
@@ -46,6 +45,35 @@ class User(db.Model):
 
 
 print('***TEST-2***')
+
+
+# Log In
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+       
+    # test if there is a 'POST' request
+    if request.method == 'POST':
+
+        # Get parameters from post request
+        username = request.form['username_f']
+        password = request.form['password_f']
+        user = User.query.filter_by(username=username).first() 
+        
+        # Verification
+        if user == None:                                # username does not exist
+            flash('Username does not exist', 'user')
+            return render_template('login.html')   
+        elif not (user.password == password):           # password does not match
+            flash('User password incorrect', 'pwd')
+            return render_template('login.html')
+        else:                                           # pass
+            session['username'] = username              # store username in session
+            return redirect('/blog')                        # return user to homepage when
+
+    return render_template('login.html')
+
+
+print('***TEST-3***')
 # New Post Function
 @app.route('/newpost', methods=['GET','POST'])
 def newpost():
@@ -54,7 +82,7 @@ def newpost():
     # render this block of code when submit button is pressed
     if request.method == 'POST':
         
-        # retrieve variables
+        # retrieve variables from form
         title = request.form['title_f']
         body = request.form['body_f']
 
@@ -74,12 +102,16 @@ def newpost():
             return render_template('newpost.html',errorTitle=errorT,errorBody=errorB,title_p=title,body_p=body)
         # if no error message redirect back to blog page
         else:
-            # get from form
+            # get form variables, save them
             entry_title = request.form['title_f']
             entry_body = request.form['body_f']
             
+            # hit the session for current logged in user
+            user = session['username']
+            # hit the database for user id
+            #user_id = User.query.filter_by(username=user)first()
             # database insertion
-            blog_entry = Blog(entry_title, entry_body)
+            blog_entry = Blog(entry_title, entry_body, user)
             db.session.add(blog_entry)
             db.session.commit()
 
