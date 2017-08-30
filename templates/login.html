@@ -3,7 +3,7 @@
 {% extends "base.html" %}
 {% block content %}
 <h1>Log in to Blogz</h1>
-<p>If you don't have an account, you may <a href="/register">register</a> for one</p>
+<p>If you don't have an account, you may <a href="/signup">sign up</a> for one</p>
 
 <form action="/login" method="POST">
     <table>
@@ -11,7 +11,7 @@
             {% with messages = get_flashed_messages(category_filter=["user"]) %}
             <td><label for="username">username</label></td>
             <td>
-                <input id="username" name="username_f" type="text" value="{{request.form.username}}">
+                <input id="username" name="username_f" type="text" value="{{request.form.username_f}}">
                 <span class='error'>{{messages[0]}}</span>
             </td>
             {% endwith %}

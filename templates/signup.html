@@ -1,0 +1,35 @@
+<!-- signup form for Blogz Assignment -->
+{% extends "base.html" %}
+{% block content %}
+<h1>Signup</h1>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<span class="error">{{ messages[0] }}</span>
+{% endif %}
+{% endwith %}
+
+<form action="/signup" method="post">
+    <table>
+        <tr>
+            <td><label for="username">Username</label></td>
+            <td>
+                <input id="username" name="username_f" type="text" value="{{request.form.username_f}}">
+            </td>
+        </tr>
+        <tr>
+            <td><label for="password">Password</label></td>
+            <td>
+                <input id="password" name="password_f" type="password">
+            </td>
+        </tr>
+        <tr>
+            <td><label for="verify">Verify Password</label></td>
+            <td>
+                <input id="verify" name="verify_f" type="password">
+            </td>
+        </tr>
+    </table>
+    <input type="submit">
+</form>
+{% endblock %}

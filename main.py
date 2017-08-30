@@ -1,7 +1,7 @@
 # ---- Build a Blog Assignment ----
 
 # *** Setup ***
-from flask import Flask, request, redirect, render_template, flash, request
+from flask import Flask, request, redirect, render_template, flash, request, session
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -51,8 +51,7 @@ print('***TEST-2***')
 @app.route('/login', methods=['POST', 'GET'])
 def login():
        
-    # test if there is a 'POST' request
-    if request.method == 'POST':
+    if request.method == 'POST':                        # if form is submitted
 
         # Get parameters from post request
         username = request.form['username_f']
@@ -62,18 +61,102 @@ def login():
         # Verification
         if user == None:                                # username does not exist
             flash('Username does not exist', 'user')
-            return render_template('login.html')   
+            return render_template('login.html')        
         elif not (user.password == password):           # password does not match
             flash('User password incorrect', 'pwd')
             return render_template('login.html')
         else:                                           # pass
             session['username'] = username              # store username in session
-            return redirect('/blog')                        # return user to homepage when
+            return redirect('/blog')                    # return user to main blog page
 
-    return render_template('login.html')
+    return render_template('login.html')                # first load page render blank form
 
 
 print('***TEST-3***')
+
+
+# Signup
+@app.route("/signup", methods=["GET","POST"])
+def signup():
+
+    if request.method == 'POST':
+
+        # request form information
+        username = request.form['username_f']
+        pwd = request.form['password_f']
+        verify = request.form['verify_f']
+
+        # if user exist get record from database
+        user = User.query.filter_by(username=username).first()
+        if user != None:
+            print(user.username)
+
+        # Validate Username
+        if user != None:                                            # if not in database skip inner if to avoid error
+            if user.username == username:                           # if exist
+                flash('this username already exists')
+                
+        elif username == '':                                        # if field left blank
+            flash('username must be filled in')
+            
+        elif ' ' in username:                                       # if space
+            flash('username cannot contain a space')
+            
+        elif len(username) < 3 or len(username) > 20:               # if out of range 3 to 20
+            flash('username must be between 3 and 20 characters long')
+            
+        # Validate Password
+        elif pwd == '':                                             # if field left blank
+            flash('password must be filled in', 'blank')
+            
+        elif ' ' in pwd:                                            # if space
+            flash ('password cannot contain a space', 'space')
+            
+        elif len(pwd) < 3 or len(pwd) > 20:                         # if out of range 3 to 20
+            flash('password must be between 3 and 20 characters long', 'range')
+            
+        # validate password confirmation
+        elif not (pwd == verify):
+            flash('your passwords do not match', 'match')
+            return render_template('signup.html')
+
+        # if successful add new user to database and redirect user to newpost page
+        else:
+            new_user = User(username, pwd)
+            db.session.add(new_user)
+            db.session.commit()
+            session['username'] = username
+            return redirect('/newpost')
+
+
+    return render_template('signup.html')
+
+
+print('***TEST-4***')
+
+
+# log Out
+@app.route('/logout')
+def logout():
+    print(session)
+    if session:
+        del session['username'] # delete username from session
+    return redirect('/blog')
+
+
+print('***TEST-5***')
+
+
+# Pages to be viewed without a Log in
+@app.before_request
+def require_login():
+    allowed_routes = ['index','login', 'blog', 'signup', 'logout']
+
+    if request.endpoint not in allowed_routes and 'username' not in session:
+        return redirect('/login')
+
+print('***TEST-6***')
+
 # New Post Function
 @app.route('/newpost', methods=['GET','POST'])
 def newpost():
@@ -124,6 +207,8 @@ def newpost():
     # render form when first loading page
     return render_template('newpost.html')
 
+print('***TEST-7***')
+
 
 # Blog page Function
 @app.route('/blog', methods=['GET'])
@@ -148,7 +233,7 @@ def index():
         blog_x = Blog.query.filter_by(id=value_id).all()
         return render_template('blog.html',blog=blog_x,value=value)
 
-
+print('***TEST-8***')
 # *** End Content ***
 
 if __name__ == '__main__':

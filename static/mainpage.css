@@ -1,8 +1,33 @@
+/* For Blogz Assignment */
+
+body {
+    margin-right: 2%;
+    margin-left: 2%;
+    background-color: rgb(186, 232, 206);
+}
+
 .error {
     color:red;
     font-style: italic;
 }
 
-body {
-    background-color: rgb(186, 232, 206);
+nav ul {
+    padding: 0;
+    display: inline-block;
+}
+
+hr {
+    margin: 40px auto;
+}
+
+
+nav ul li {
+    list-style: none;
+    display: inline-block;
+    margin-right: 15px;
+    
+}
+
+nav #user-account {
+    float: right;
 }
