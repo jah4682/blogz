@@ -150,7 +150,7 @@ print('***TEST-5***')
 # Pages to be viewed without a Log in
 @app.before_request
 def require_login():
-    allowed_routes = ['index','login', 'blog', 'signup', 'logout']
+    allowed_routes = ['index','login', 'list_blogs', 'signup', 'logout']    # name of functions, not URL routes
 
     if request.endpoint not in allowed_routes and 'username' not in session:
         return redirect('/login')
@@ -212,28 +212,63 @@ print('***TEST-7***')
 
 # Blog page Function
 @app.route('/blog', methods=['GET'])
-def index():
+def list_blogs():
 
 
-    # retrieve from url
-    value_id = request.args.get('id')
+    # retrieve from url, returns None if url has no query string.
+    value_id = request.args.get('id')                               
+    value_user = request.args.get('user')
+    print("******what bool is this?****",bool(value_user),"  user Id -  ",value_user)
+    print("******what bool is this?****",bool(value_id),"  title id -  ",value_id) # is None false?
     
-    # test for presense of id in URL
-    if value_id == None:
-        value = False
-    else:
-        value = True
 
-    if not value:
-        # retrieve from database
-        blog = Blog.query.all()
-        return render_template('blog.html',blog=blog,value=value)
+    # Boolean Variables
+    '''if value_id == None and value_user == None:                     # test for presense of id in URL
+        value_i = True
+        value_u = True
+    elif value_id == None and value_user:
+        value_i = False
+        value_u = True
     else:
-        value = True
+        value_i = True
+        value_u = False'''
+    #value_u = False
+
+    # Boolean test: Which interior setup to render?
+    if value_user:
+        # list user page   
+
+        user_blogs = Blog.query.filter_by(owner_id=value_user).all()
+        print('****query database test*****',user_blogs)
+        return render_template('blog.html',user=user_blogs,value_u=value_user)
+
+    elif value_id:
+        # individual blog   
+       
         blog_x = Blog.query.filter_by(id=value_id).all()
-        return render_template('blog.html',blog=blog_x,value=value)
+        return render_template('blog.html',blog=blog_x,value_i=value_id)        
+
+    else:       
+        # list all blog titles
+        blogs = Blog.query.all() # retrieve from database
+        # print('****query database test*****',blogs[0].owner.id)
+        return render_template('blog.html',blogs=blogs)        
+        # ,value_i=value_i,value_u=value_u
+        
+        
+        
+
 
 print('***TEST-8***')
+
+# Home page. List of users.
+@app.route('/')
+def index():
+
+    users = User.query.all()
+    return render_template('index.html', users=users)
+
+print('***TEST-9***')
 # *** End Content ***
 
 if __name__ == '__main__':
