@@ -26,7 +26,7 @@
 <!-- display individual blog entry -->
 <h1 style="text-align: center;">{{blog[0].title}}</h1>
 <p>{{blog[0].body}}</p>
-<p>written by <a href="/blog?user={{blog[0].owner.username}}">{{blog[0].owner.username}}</a></p>
+<p>written by <a href="/blog?user={{blog[0].owner_id}}">{{blog[0].owner.username}}</a></p>
 
 
 {% else %}

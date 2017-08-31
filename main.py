@@ -192,9 +192,9 @@ def newpost():
             # hit the session for current logged in user
             user = session['username']
             # hit the database for user id
-            #user_id = User.query.filter_by(username=user)first()
+            user_id = User.query.filter_by(username=user).first()
             # database insertion
-            blog_entry = Blog(entry_title, entry_body, user)
+            blog_entry = Blog(entry_title, entry_body, user_id)
             db.session.add(blog_entry)
             db.session.commit()
 
