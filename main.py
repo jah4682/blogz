@@ -3,6 +3,7 @@
 # *** Setup ***
 from flask import Flask, request, redirect, render_template, flash, request, session
 from flask_sqlalchemy import SQLAlchemy
+from hashutils_hash_n_salt import make_pw_hash, check_pw_hash
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -35,13 +36,13 @@ class User(db.Model):
     # Table Structure
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(120), unique=True)
-    password = db.Column(db.String(120))
+    pw_hash = db.Column(db.String(120))
     blogs = db.relationship('Blog', backref='owner') # relationship
 
     # constuctor
     def __init__(self, username, password):
         self.username = username
-        self.password = password        
+        self.pw_hash = make_pw_hash(password)        
 
 
 print('***TEST-2***')
@@ -62,7 +63,7 @@ def login():
         if user == None:                                # username does not exist
             flash('Username does not exist', 'user')
             return render_template('login.html')        
-        elif not (user.password == password):           # password does not match
+        elif not check_pw_hash(password, user.pw_hash):           # password does not match
             flash('User password incorrect', 'pwd')
             return render_template('login.html')
         else:                                           # pass
